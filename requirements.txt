@@ -6,3 +6,4 @@ filelock
 sentencepiece
 mpi4py
 tensorboardX==1.8
+googletrans==3.1.0a0
