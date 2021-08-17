@@ -32,6 +32,7 @@ from utils import load_checkpoint, get_checkpoint_iteration
 from data_utils import get_tokenizer
 import mpu
 import deepspeed
+import Translator
 
 from fp16 import FP16_Module
 from model import GPT2Model
@@ -73,6 +74,7 @@ def _parse_and_to_tensor(text, img_size=256, query_template='{}'):
     return seq
 
 def get_context(args, query_template='{}'):
+    translator = Translator() # translator
     tokenizer = get_tokenizer()
     terminate_runs = 0
     img_size = 256 if args.generation_task != 'low-level super-resolution' else 128
@@ -109,6 +111,7 @@ def get_context(args, query_template='{}'):
             rk = dist.get_rank()
             print(f'Working on No. {line_no} on {rk}... ')
             raw_text = raw_text.strip()
+            raw_text = translator.translate(raw_text, dest="zh-cn").text # english-to-chinese translator
             if len(raw_text) == 0:
                 continue
             if args.with_id: # with id
